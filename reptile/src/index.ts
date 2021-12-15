@@ -16,7 +16,7 @@ function main(){
                 file = './etc/config.js'
             }
             let config = await loadConfig<any>(file);
-            serve(config)
+            await serve(config)
             } catch (error) {
                 console.error(error)
 				process.exit(1)

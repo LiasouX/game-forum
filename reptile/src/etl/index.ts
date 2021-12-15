@@ -2,7 +2,7 @@
 
 export interface Extract<T>{
 
-    extract():AsyncGenerator<T,void,any>
+    extract():Promise<T>
 }
 
 
@@ -11,6 +11,6 @@ export interface Transform{
 }
 
 
-export interface Load{
-    load:Promise<void>
+export interface Load<T>{
+    load(data:T):Promise<void>
 }

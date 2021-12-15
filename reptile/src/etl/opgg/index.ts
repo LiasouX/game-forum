@@ -121,7 +121,6 @@ export class OPGGDetailExtract implements Extract<void>{
             }
         } catch (error: any) {
             logger.error(`OPGGDetailExtract is ${error.message}`)
-            return
         }
     }
 
@@ -229,7 +228,12 @@ async function uploadImg(detailCol: Collection<OPGGDetailModule>, qiniu: QiniuUp
                 const urls = item.skillUrl
                 for (const url of urls) {
                     logger.debug(url)
-                    qiniu.uploadStream(url, item.skillName.shift() || '')
+                    try {
+                        await sleep(5)
+                        qiniu.uploadStream(url, item.skillName.shift() || '')
+                    } catch (error) {
+                        console.log(error)
+                    }
                 }
             }
         }
@@ -242,7 +246,7 @@ export async function opgg(db: connecDB, qiniu: QiniuUpload) {
     const urlQueue = await db.mongoCol<{ _id: string, url: string }>('urlQueue')
     const opggCol = await db.mongoCol<OPGGDataModule>('opgg')
     const detailCol = await db.mongoCol<OPGGDetailModule>('opggDetail')
-    await basicOPGG(opggCol)
-    await detail(urlQueue, opggCol, detailCol)
+    // await basicOPGG(opggCol)
+    // await detail(urlQueue, opggCol, detailCol)
     uploadImg(detailCol, qiniu)
 }
